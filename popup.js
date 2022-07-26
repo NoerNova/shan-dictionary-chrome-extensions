@@ -81,14 +81,14 @@ function translateInput() {
     })
     .then(function (res) {
       if (res.entries) {
-        var definationList = "";
+        var definitionList = "";
 
         res.entries.map(function (def) {
-          definationList +=
+          definitionList +=
             "<div class='definition-container'/><p class='type'>" +
             def.type +
             ".</p> <p class='definition'>" +
-            def.defination +
+            def.definition +
             "</p></div>";
         });
 
@@ -96,7 +96,7 @@ function translateInput() {
           "<div class='translation'><p>Word</p><h2> " +
           getInputText +
           "</h2><p>Definition</p><div class='definition-area-container'>" +
-          definationList +
+          definitionList +
           "</div>";
 
         document.getElementById("close-button").style.visibility = "visible";
