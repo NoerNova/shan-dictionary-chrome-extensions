@@ -1,5 +1,6 @@
 // shandictionary api URL
-var apiURL = "https://api.shandictionary.com/api/collections/entries/";
+const apiURL = "https://api.shandictionary.com/api/collections/entries/";
+const SHN_TTS_API = "https://shantts.herokuapp.com/api/?text=";
 
 var inputText = document.getElementById("search-box");
 var defaultElement = document.getElementById("translation").innerHTML;
@@ -8,6 +9,7 @@ var dictSelection = document.getElementById("dict-selection");
 // Event Listener
 document.getElementById("search-button").onclick = translateInput;
 document.getElementById("close-button").onclick = resetAll;
+
 
 // Enter event listenet
 inputText.addEventListener("keypress", function (e) {
@@ -65,6 +67,36 @@ function clearTranslations() {
   document.getElementById("translation").innerHTML = defaultElement;
 }
 
+// speak function
+function browserSpeak (msg, vox) {
+  const sp = new SpeechSynthesisUtterance()
+  sp.voice = window.speechSynthesis.getVoices().filter((e) => {
+    return vox == e.name
+  })[0]
+  sp.text = msg
+  speechSynthesis.speak(sp)
+}
+
+async function shanTTSSpeak (msg) {
+  try {
+    const e = await fetch(SHN_TTS_API + msg);
+    const { data } = await e.json()
+    
+    if (!data) return
+    
+    const audio = new Audio(`data:audio/wav;base64,${data}`)
+    audio.play()
+  } catch (err) {}
+}
+
+function speakMe(word, endpoint) {
+  if (endpoint === 'eng2shn') {
+    browserSpeak(word, 'Google US English')
+    return
+  }
+  shanTTSSpeak(word)
+}
+
 // translation from input
 function translateInput() {
   clearTranslations();
@@ -93,12 +125,14 @@ function translateInput() {
         });
 
         document.getElementById("translation").innerHTML =
-          "<div class='translation'><p>Word</p><h2> " +
+         "<div class='translation'><p>Word</p><h2> " + 
+          "<button id='speak-button' class='speak-button'><i class='fa fa-volume-up fa-lg'></i></button> " +
           getInputText +
           "</h2><p>Definition</p><div class='definition-area-container'>" +
           definitionList +
           "</div>";
 
+        document.getElementById("speak-button").onclick = speakMe.bind(null, getInputText, dictEndpoint);
         document.getElementById("close-button").style.visibility = "visible";
       } else {
         document.getElementById("translation").innerHTML =
@@ -109,6 +143,7 @@ function translateInput() {
 
         document.getElementById("close-button").style.visibility = "visible";
       }
+
     });
 }
 
