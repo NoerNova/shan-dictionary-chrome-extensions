@@ -2,7 +2,8 @@
 
 a google chrome extension for [English - Tai dictionary](https://taidictionary.noernova.com) , **It currently supports English to Shan translations.**
 
-![Screen Shot 2565-07-22 at 09 52 25](https://user-images.githubusercontent.com/9565672/180484920-f404b5e0-061d-4ce7-86eb-7f3ccf4ed8c0.png)
+![Screen Shot 2565-08-23 at 13 15 16](https://user-images.githubusercontent.com/9565672/186084216-54f046b7-bf97-46d5-a95f-ca5173223153.png)
+
 
 ![Screen Shot 2564-12-10 at 00 26 copy](https://user-images.githubusercontent.com/9565672/145446520-76033b23-c54b-48d4-919e-977c51d95f52.jpg)
 
