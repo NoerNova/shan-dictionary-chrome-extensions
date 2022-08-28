@@ -8,14 +8,33 @@
   "action": {
     "default_popup": "./popup/popup.html",
     "default_title": "Shan Dictionary",
-    "default_icon": "assets/icon.png"
+    "default_icon": "assets/images/icon.png"
   },
-
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": [
+        "assets/images/icon.png",
+        "assets/css/fontawesome.min.css",
+        "assets/css/regular.min.css",
+        "assets/css/solid.min.css",
+        "assets/fonts/fa-regular-400.woff2",
+        "assets/fonts/fa-solid-900.woff2",
+        "assets/fonts/Shan.woff"
+      ]
+    }
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "css": ["main.css"],
-      "js": ["main.js"],
+      "html": ["main.html"],
+      "css": [
+        "main.css",
+        "assets/css/fontawesome.min.css",
+        "assets/css/regular.min.css",
+        "assets/css/solid.min.css"
+      ],
+      "js": ["main.js", "text-to-speech.js"],
       "run_at": "document_end",
       "all_frames": true
     }

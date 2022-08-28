@@ -1,105 +1,160 @@
-var apiKey = "NO8p3FC4qMrTzx1RUjRXNXWrqlLa8DkDjmRgt7s9rDE=";
+/*jshint esversion: 8 */
 
-// Add bubble to the top of the page.
-var bubble = document.createElement("div");
-bubble.setAttribute("class", "bubble");
-document.body.appendChild(bubble);
+const apiKey = "NO8p3FC4qMrTzx1RUjRXNXWrqlLa8DkDjmRgt7s9rDE=";
 
-var bubbleContent = document.createElement("div");
-bubbleContent.setAttribute("class", "bubbleContent");
-bubble.appendChild(bubbleContent);
+// bubbleIcon
+let bubbleIcon = document.createElement("div");
+bubbleIcon.setAttribute("class", "bubbleIconContainer");
+bubbleIcon.onmousedown = translateText;
+document.body.appendChild(bubbleIcon);
 
-// Add icon to the top of the page.
-var taiEngicon = document.createElement("div");
-taiEngicon.setAttribute("class", "taiEngIconContainer");
-taiEngicon.onmousedown = onIconClick;
-document.body.appendChild(taiEngicon);
+// add icon imageElement
+let iconImage = document.createElement("IMG");
+iconImage.setAttribute("src", chrome.runtime.getURL("assets/images/icon.png"));
+iconImage.setAttribute("class", "bubbleIcon");
 
-var loading = false;
-var languageEndpoint = "/eng/";
+// default state
+let loading = false;
+let languageEndpoint = "/eng/";
 
 // Lets listen to mouseup DOM events.
-document.addEventListener(
-  "mouseup",
-  function (e) {
-    var selection = window.getSelection().toString();
-    if (selection.length > 0 && selection.length < 20 && !loading) {
-      renderIcon(e.clientX - 20, e.clientY + 10);
+document.addEventListener("mouseup", handleSelection, false);
+
+function handleSelection(event) {
+  const selection = window.getSelection().toString();
+  if (selection.length > 0 && selection.length < 20 && !loading) {
+    let scrollTop;
+
+    if (window.pageYOffset !== undefined) {
+      scrollTop = window.pageYOffset;
     } else {
-      taiEngicon.style.visibility = "hidden";
+      scrollTop = (
+        document.documentElement ||
+        document.body.parentNode ||
+        document.body
+      ).scrollTop;
     }
-  },
-  false
-);
+
+    // Get cursor position
+    const posX = event.clientX - 20;
+    const posY = event.clientY + 10 + scrollTop;
+
+    renderIcon(posX, posY);
+  } else {
+    bubbleIcon.style.visibility = "hidden";
+  }
+}
+
+function closeBubble() {
+  const bubble = document.getElementById("bubble");
+  const bubbleContent = document.getElementById("bubbleContent");
+
+  if (bubble && bubbleContent) {
+    bubble.remove();
+  }
+
+  if (bubbleContent) {
+    bubbleContent.remove();
+  }
+  loading = false;
+}
 
 window.onclick = function (event) {
-  if (event.target.matches(".bubble")) {
-    bubble.style.visibility = "hidden";
-    bubble.style.display = "none";
-    loading = false;
+  const bubbleArea = document.getElementById("bubbleContent");
+
+  if (bubbleArea) {
+    const isClickInside = bubbleArea.contains(event.target);
+
+    if (!isClickInside) {
+      closeBubble();
+    }
   }
 };
 
 function renderIcon(mouseX, mouseY) {
-  taiEngicon.innerHTML =
-    "<img class='taiEngicon' src='https://user-images.githubusercontent.com/9565672/145232095-a2ee28c3-bb6b-45b6-a742-ed027aa028d3.png'/>";
-  taiEngicon.style.top = mouseY + "px";
-  taiEngicon.style.left = mouseX + "px";
-  taiEngicon.style.visibility = "visible";
+  bubbleIcon.appendChild(iconImage);
+  bubbleIcon.style.top = mouseY + "px";
+  bubbleIcon.style.left = mouseX + "px";
+  bubbleIcon.style.visibility = "visible";
 }
 
-function onIconClick(e) {
+function translateText(event) {
   loading = true;
-  taiEngicon.style.visibility = "hidden";
-  var selection = window.getSelection().toString();
+  bubbleIcon.style.visibility = "hidden";
+
+  const selection = window.getSelection().toString();
+
+  let scrollTop;
+
+  if (window.pageYOffset !== undefined) {
+    scrollTop = window.pageYOffset;
+  } else {
+    scrollTop = (
+      document.documentElement ||
+      document.body.parentNode ||
+      document.body
+    ).scrollTop;
+  }
+
+  // Get cursor position
+  const posX = event.clientX - 20;
+  const posY = event.clientY + 10 + scrollTop;
+
   if (selection.length > 0) {
-    translateText(e.clientX - 20, e.clientY + 10, selection);
+    const url =
+      "https://tai-eng-dictionaryapi.herokuapp.com/api/v1/api_key=" +
+      apiKey +
+      languageEndpoint +
+      selection.toLowerCase();
+    fetch(url)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (res) {
+        if (!res.data) {
+          renderBubble(posX, posY, selection, "Translation not found.");
+        } else {
+          renderBubble(posX, posY, selection, res.data[0].shan);
+        }
+      })
+      .catch(function (err) {
+        closeBubble();
+      });
   }
 }
 
-function translateText(mouseX, mouseY, selection) {
-  taiEngicon.style.visibility = "hidden";
-
-  var url =
-    "https://tai-eng-dictionaryapi.herokuapp.com/api/v1/api_key=" +
-    apiKey +
-    languageEndpoint +
-    selection.toLowerCase();
-  fetch(url)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (res) {
-      if (!res.data) {
-        renderBubble(mouseX, mouseY, selection, "Translation not found.");
-      } else {
-        renderBubble(mouseX, mouseY, selection, res.data[0].shan);
-      }
-    })
-    .catch(function (err) {
-      console.error("An error ocurred", err);
-    });
-}
-
-function onCloseBubble(e) {
-  loading = false;
-  bubble.style.display = "none";
-  bubble.style.visibility = "hidden";
-}
-
 // Move that bubble to the appropriate location.
-function renderBubble(mouseX, mouseY, englishText, translation) {
-  taiEngicon.style.visibility = "hidden";
+function renderBubble(posX, posY, englishText, translation) {
+  // Add bubble to the top of the page.
+  let bubble = document.createElement("div");
+  bubble.setAttribute("id", "bubble");
+  bubble.setAttribute("class", "bubble");
+  document.body.appendChild(bubble);
+
+  let bubbleContent = document.createElement("div");
+  bubbleContent.setAttribute("id", "bubbleContent");
+  bubbleContent.setAttribute("class", "bubbleContent");
+  bubble.appendChild(bubbleContent);
+
   bubbleContent.innerHTML =
-    "<div><span id='langText' class='closeButton'>&times;</span><p class='langText'>English:</p><p class='translatedText'> " +
+    "<div class='bubbleContentContainer'><span id='closeButton' class='closeButton'>&times;</span>" +
+    "<p class='langText'>English:</p><p class='translatedText'> " +
+    "<button id='speak-button' class='speak-button'><i class='fa fa-volume-up fa-lg'></i></button> " +
     englishText +
     "</p><p class='langText'>Shan:</p><p class='translatedText'>" +
     translation +
-    "</p><div><a class='websiteLink' href='https://taidictionary.noernova.com' target='_blank' rel='noopener '>MORE >></a></div></div>";
-  bubbleContent.style.top = mouseY + "px";
-  bubbleContent.style.left = mouseX + "px";
-  bubble.style.visibility = "visible";
-  bubble.style.display = "block";
+    "</p><div><a class='websiteLink' href='https://shandictionary.com' target='_blank' rel='noopener '>MORE >></a></div></div>";
 
-  document.getElementById("langText").addEventListener("click", onCloseBubble);
+  bubbleContent.style.top = posY + "px";
+  bubbleContent.style.left = posX + "px";
+
+  bubble.style.visibility = "visible";
+
+  document.getElementById("speak-button").onclick = speakMe.bind(
+    null,
+    englishText,
+    "eng2shn"
+  );
+
+  document.getElementById("closeButton").addEventListener("click", closeBubble);
 }
