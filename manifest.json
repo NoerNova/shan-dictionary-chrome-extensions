@@ -19,7 +19,8 @@
         "assets/css/regular.min.css",
         "assets/css/solid.min.css",
         "assets/fonts/fa-regular-400.woff2",
-        "assets/fonts/fa-solid-900.woff2"
+        "assets/fonts/fa-solid-900.woff2",
+        "assets/fonts/Shan.woff"
       ]
     }
   ],

@@ -60,8 +60,14 @@ function closeBubble() {
 }
 
 window.onclick = function (event) {
-  if (event.target.matches(".bubble")) {
-    closeBubble();
+  const bubbleArea = document.getElementById("bubbleContent");
+
+  if (bubbleArea) {
+    const isClickInside = bubbleArea.contains(event.target);
+
+    if (!isClickInside) {
+      closeBubble();
+    }
   }
 };
 
@@ -112,7 +118,7 @@ function translateText(event) {
         }
       })
       .catch(function (err) {
-        console.error("An error ocurred", err);
+        closeBubble();
       });
   }
 }
@@ -124,8 +130,6 @@ function renderBubble(posX, posY, englishText, translation) {
   bubble.setAttribute("id", "bubble");
   bubble.setAttribute("class", "bubble");
   document.body.appendChild(bubble);
- // document.querySelector(':root').prepend(bubble);
-
 
   let bubbleContent = document.createElement("div");
   bubbleContent.setAttribute("id", "bubbleContent");
@@ -133,7 +137,7 @@ function renderBubble(posX, posY, englishText, translation) {
   bubble.appendChild(bubbleContent);
 
   bubbleContent.innerHTML =
-    "<div><span id='closeButton' class='closeButton'>&times;</span>" +
+    "<div class='bubbleContentContainer'><span id='closeButton' class='closeButton'>&times;</span>" +
     "<p class='langText'>English:</p><p class='translatedText'> " +
     "<button id='speak-button' class='speak-button'><i class='fa fa-volume-up fa-lg'></i></button> " +
     englishText +
@@ -141,8 +145,6 @@ function renderBubble(posX, posY, englishText, translation) {
     translation +
     "</p><div><a class='websiteLink' href='https://shandictionary.com' target='_blank' rel='noopener '>MORE >></a></div></div>";
 
-  document.documentElement.style.position = "relative";
-  document.querySelector(':root').style.position = "relative";
   bubbleContent.style.top = posY + "px";
   bubbleContent.style.left = posX + "px";
 
