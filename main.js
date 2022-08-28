@@ -123,7 +123,9 @@ function renderBubble(posX, posY, englishText, translation) {
   let bubble = document.createElement("div");
   bubble.setAttribute("id", "bubble");
   bubble.setAttribute("class", "bubble");
-  document.body.prepend(bubble);
+  document.body.appendChild(bubble);
+ // document.querySelector(':root').prepend(bubble);
+
 
   let bubbleContent = document.createElement("div");
   bubbleContent.setAttribute("id", "bubbleContent");
@@ -139,7 +141,8 @@ function renderBubble(posX, posY, englishText, translation) {
     translation +
     "</p><div><a class='websiteLink' href='https://shandictionary.com' target='_blank' rel='noopener '>MORE >></a></div></div>";
 
-  document.body.style.position = "relative";
+  document.documentElement.style.position = "relative";
+  document.querySelector(':root').style.position = "relative";
   bubbleContent.style.top = posY + "px";
   bubbleContent.style.left = posX + "px";
 
