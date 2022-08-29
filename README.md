@@ -1,18 +1,19 @@
 ## Google-Chrome extensions for Tai - End Dictionnary
 
-a google chrome extension for [English - Tai dictionary](https://taidictionary.noernova.com) , **It currently supports English to Shan translations.**
-
-![Screen Shot 2565-08-23 at 13 15 16](https://user-images.githubusercontent.com/9565672/186084216-54f046b7-bf97-46d5-a95f-ca5173223153.png)
+a google chrome extension for [shandictionary](https://shandictionary.com),
 
 
-![Screen Shot 2564-12-10 at 00 26 copy](https://user-images.githubusercontent.com/9565672/145446520-76033b23-c54b-48d4-919e-977c51d95f52.jpg)
+<img width="1337" alt="Screen Shot 2565-08-30 at 02 10 51" src="https://user-images.githubusercontent.com/9565672/187280398-540b9419-69b1-4296-a3dc-16a68b3b018c.png">
 
-<img width="1112" alt="Screen Shot 2564-12-10 at 00 26 27" src="https://user-images.githubusercontent.com/9565672/145446543-07d1d5af-e905-4d5d-89a2-bcd72a359b27.png">
+<img width="1337" alt="Screen Shot 2565-08-30 at 02 11 16" src="https://user-images.githubusercontent.com/9565672/187280425-ce7ec3cc-2663-4c2d-81aa-e504106ea82a.png">
 
+<img width="1094" alt="Screen Shot 2565-08-30 at 02 08 39" src="https://user-images.githubusercontent.com/9565672/187280440-3cffdb2c-b81d-4cc2-8f9b-94bde7dcc8bd.png">
 
+<img width="1094" alt="Screen Shot 2565-08-30 at 02 08 29" src="https://user-images.githubusercontent.com/9565672/187280461-3fc52278-ebd6-4957-b804-e89cc1508b1e.png">
 
-https://user-images.githubusercontent.com/9565672/155753642-345fcd5a-f9aa-407b-a3ff-880587ad4d23.mov
+<img width="1094" alt="Screen Shot 2565-08-30 at 02 09 18" src="https://user-images.githubusercontent.com/9565672/187280487-31c129cc-e7ba-435c-92c6-9874c6c76892.png">
 
+<img width="1094" alt="Screen Shot 2565-08-30 at 02 09 27" src="https://user-images.githubusercontent.com/9565672/187280514-7ea8f886-c07d-4733-bdc5-10b4ebf83488.png">
 
 ### Install
 
