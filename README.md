@@ -1,4 +1,4 @@
-## Google-Chrome extensions for Tai - End Dictionnary
+## Google-Chrome extensions for Shan Dictionnary
 
 a google chrome extension for [shandictionary](https://shandictionary.com),
 
