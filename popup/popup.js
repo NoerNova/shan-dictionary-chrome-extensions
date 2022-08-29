@@ -72,24 +72,24 @@ function translateInput() {
   clearTranslations();
 
   // selected dict type
-  var dictEndpoint = document.getElementById("dict-selection").value;
-  var getInputText = inputText.value.toLowerCase() || "";
+  const dictEndpoint = document.getElementById("dict-selection").value;
+  const getInputText = inputText.value.toLowerCase() || "";
 
-  var url = apiURL + dictEndpoint + "/" + "?filter[word]=" + getInputText;
+  const url = apiURL + dictEndpoint + "/" + "?filter[word]=" + getInputText;
 
   fetch(url)
     .then(function (response) {
       return response.json();
     })
     .then(function (res) {
-      if (res.entries) {
+      if (res.entries.length > 0) {
         var definitionList = "";
 
         res.entries.map(function (def) {
           definitionList +=
             "<div class='definition-container'/><p class='type'>" +
-            def.type +
-            ".</p> <p class='definition'>" +
+            "[" + def.type + "]." +
+            "</p> <p class='definition'>" +
             def.definition +
             "</p></div>";
         });
@@ -113,6 +113,7 @@ function translateInput() {
           "<div class='translation'><p>Word</p><h2> " +
           getInputText +
           "</h2><p>Definition</p><h2> " +
+          getInputText +
           "</h2></div>";
 
         document.getElementById("close-button").style.visibility = "visible";

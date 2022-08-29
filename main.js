@@ -2,6 +2,9 @@
 
 const apiKey = "NO8p3FC4qMrTzx1RUjRXNXWrqlLa8DkDjmRgt7s9rDE=";
 
+// shandictionary api URL
+const apiURL = "https://api.shandictionary.com/api/collections/entries/";
+
 // bubbleIcon
 let bubbleIcon = document.createElement("div");
 bubbleIcon.setAttribute("class", "bubbleIconContainer");
@@ -15,31 +18,40 @@ iconImage.setAttribute("class", "bubbleIcon");
 
 // default state
 let loading = false;
-let languageEndpoint = "/eng/";
+let languageEndpoint = "eng2shn";
+
+// load user setting from chrom sync storage
+chrome.storage.sync.get("defaultDict", function (items) {
+  languageEndpoint = items.defaultDict || "eng2shn";
+});
 
 // Lets listen to mouseup DOM events.
 document.addEventListener("mouseup", handleSelection, false);
 
+function getPosition(event) {
+  let scrollTop;
+
+  if (window.pageYOffset !== undefined) {
+    scrollTop = window.pageYOffset;
+  } else {
+    scrollTop = (
+      document.documentElement ||
+      document.body.parentNode ||
+      document.body
+    ).scrollTop;
+  }
+
+  // Get cursor position
+  const posX = event.clientX - 20;
+  const posY = event.clientY + 10 + scrollTop;
+
+  return { posX, posY };
+}
+
 function handleSelection(event) {
   const selection = window.getSelection().toString();
   if (selection.length > 0 && selection.length < 20 && !loading) {
-    let scrollTop;
-
-    if (window.pageYOffset !== undefined) {
-      scrollTop = window.pageYOffset;
-    } else {
-      scrollTop = (
-        document.documentElement ||
-        document.body.parentNode ||
-        document.body
-      ).scrollTop;
-    }
-
-    // Get cursor position
-    const posX = event.clientX - 20;
-    const posY = event.clientY + 10 + scrollTop;
-
-    renderIcon(posX, posY);
+    renderIcon(event);
   } else {
     bubbleIcon.style.visibility = "hidden";
   }
@@ -71,11 +83,35 @@ window.onclick = function (event) {
   }
 };
 
-function renderIcon(mouseX, mouseY) {
+function renderIcon(event) {
+  const { posX, posY } = getPosition(event);
+
   bubbleIcon.appendChild(iconImage);
-  bubbleIcon.style.top = mouseY + "px";
-  bubbleIcon.style.left = mouseX + "px";
+  bubbleIcon.style.top = posY + "px";
+  bubbleIcon.style.left = posX + "px";
   bubbleIcon.style.visibility = "visible";
+}
+
+function fetchAPI(selection, event) {
+  const url =
+    apiURL +
+    languageEndpoint +
+    "/" +
+    "?filter[word]=" +
+    selection.toLowerCase();
+
+  fetch(url)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (res) {
+      if (res.entries) {
+        renderBubble(selection, res.entries, event);
+      }
+    })
+    .catch(function (err) {
+      closeBubble();
+    });
 }
 
 function translateText(event) {
@@ -84,47 +120,13 @@ function translateText(event) {
 
   const selection = window.getSelection().toString();
 
-  let scrollTop;
-
-  if (window.pageYOffset !== undefined) {
-    scrollTop = window.pageYOffset;
-  } else {
-    scrollTop = (
-      document.documentElement ||
-      document.body.parentNode ||
-      document.body
-    ).scrollTop;
-  }
-
-  // Get cursor position
-  const posX = event.clientX - 20;
-  const posY = event.clientY + 10 + scrollTop;
-
   if (selection.length > 0) {
-    const url =
-      "https://tai-eng-dictionaryapi.herokuapp.com/api/v1/api_key=" +
-      apiKey +
-      languageEndpoint +
-      selection.toLowerCase();
-    fetch(url)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (res) {
-        if (!res.data) {
-          renderBubble(posX, posY, selection, "Translation not found.");
-        } else {
-          renderBubble(posX, posY, selection, res.data[0].shan);
-        }
-      })
-      .catch(function (err) {
-        closeBubble();
-      });
+    fetchAPI(selection, event);
   }
 }
 
 // Move that bubble to the appropriate location.
-function renderBubble(posX, posY, englishText, translation) {
+function renderBubble(selectionText, translation, event) {
   // Add bubble to the top of the page.
   let bubble = document.createElement("div");
   bubble.setAttribute("id", "bubble");
@@ -136,24 +138,64 @@ function renderBubble(posX, posY, englishText, translation) {
   bubbleContent.setAttribute("class", "bubbleContent");
   bubble.appendChild(bubbleContent);
 
-  bubbleContent.innerHTML =
-    "<div class='bubbleContentContainer'><span id='closeButton' class='closeButton'>&times;</span>" +
-    "<p class='langText'>English:</p><p class='translatedText'> " +
-    "<button id='speak-button' class='speak-button'><i class='fa fa-volume-up fa-lg'></i></button> " +
-    englishText +
-    "</p><p class='langText'>Shan:</p><p class='translatedText'>" +
-    translation +
-    "</p><div><a class='websiteLink' href='https://shandictionary.com' target='_blank' rel='noopener '>MORE >></a></div></div>";
+  let definitionList = "";
 
+  if (translation.length > 0) {
+    translation.map(function (def) {
+      definitionList +=
+        "<div class='definition-container'/><p class='type'>" +
+        "[" + def.type + "]." +
+        "</p> <p class='definition'>" +
+        def.definition +
+        "</p></div>";
+    });
+  } else {
+    definitionList +=
+      "<div class='definition-container'/><p class='definition'>" +
+      selectionText +
+      "</p></div>";
+  }
+
+  bubbleContent.innerHTML =
+    "<div class='bubbleContentContainer'>" +
+    "<select name='dict' id='dict-selection' class='dict-selection'>" +
+    "<option value='eng2shn'>Engish - Shan</option>" +
+    "<option value='shn2eng'>Shan - English</option>" +
+    "</select>" +
+    "<span id='closeButton' class='closeButton'>&times;</span>" +
+    "<p class='langText' id='selection-word'>English:</p><p class='translatedText'> " +
+    "<button id='speak-button' class='speak-button'><i class='fa fa-volume-up fa-lg'></i></button> " +
+    selectionText +
+    "</p><p class='langText' id='translation-word'>Shan:</p><p class='translatedText'>" +
+    definitionList +
+    "</p><div><a class='websiteLink' href='https://shandictionary.com' target='_blank' rel='noopener '>shandictionary.com</a></div></div>";
+
+  const { posX, posY } = getPosition(event);
   bubbleContent.style.top = posY + "px";
   bubbleContent.style.left = posX + "px";
 
   bubble.style.visibility = "visible";
 
+  document.getElementById("dict-selection").value = languageEndpoint;
+
+  if (languageEndpoint === "shn2eng") {
+    document.getElementById("selection-word").innerHTML = "Shan:";
+    document.getElementById("translation-word").innerHTML = "English:";
+  }
+
+  // handle dict-selection change
+  document
+    .getElementById("dict-selection")
+    .addEventListener("change", function () {
+      languageEndpoint = document.getElementById("dict-selection").value;
+      closeBubble();
+      translateText(event);
+    });
+
   document.getElementById("speak-button").onclick = speakMe.bind(
     null,
-    englishText,
-    "eng2shn"
+    selectionText,
+    languageEndpoint
   );
 
   document.getElementById("closeButton").addEventListener("click", closeBubble);
