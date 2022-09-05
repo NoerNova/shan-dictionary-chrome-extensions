@@ -86,12 +86,21 @@ function translateInput() {
         var definitionList = "";
 
         res.entries.map(function (def) {
-          definitionList +=
-            "<div class='definition-container'/><p class='type'>" +
-            "[" + def.type + "]." +
-            "</p> <p class='definition'>" +
-            def.definition +
-            "</p></div>";
+          if (def.type !== null && def.type !== "null") {
+            definitionList +=
+              "<div class='definition-container'/><p class='type'>" +
+              "[" +
+              def.type +
+              "]." +
+              "</p> <p class='definition'>" +
+              def.definition +
+              "</p></div>";
+          } else {
+            definitionList +=
+              "<div class='definition-container'/><p class='definition'>" +
+              def.definition +
+              "</p></div>";
+          }
         });
 
         document.getElementById("translation").innerHTML =

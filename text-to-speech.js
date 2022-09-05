@@ -28,6 +28,9 @@ function speakMe(word, endpoint) {
   if (endpoint === "eng2shn") {
     browserSpeak(word, "Google US English");
     return;
+  } else if (endpoint === "tha2shn") {
+    browserSpeak(word, "Thai");
   }
+
   shanTTSSpeak(word);
 }

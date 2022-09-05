@@ -2,8 +2,8 @@
   "manifest_version": 3,
 
   "name": "Shan Dictionary",
-  "description": "This extension will provide English-Shan translations",
-  "version": "0.5",
+  "description": "This extension will provide English-Shan, English-Shan, Shan-Burmese dictionary from shandictionary.com",
+  "version": "1.0.0",
 
   "action": {
     "default_popup": "./popup/popup.html",

@@ -1,7 +1,5 @@
 /*jshint esversion: 8 */
 
-const apiKey = "NO8p3FC4qMrTzx1RUjRXNXWrqlLa8DkDjmRgt7s9rDE=";
-
 // shandictionary api URL
 const apiURL = "https://api.shandictionary.com/api/collections/entries/";
 
@@ -50,7 +48,17 @@ function getPosition(event) {
 
 function handleSelection(event) {
   const selection = window.getSelection().toString();
-  if (selection.length > 0 && selection.length < 20 && !loading) {
+
+  const lengthVSpace = /\s/.test(selection);
+  const isContainNum = /\d/.test(selection);
+
+  if (
+    !lengthVSpace &&
+    !isContainNum &&
+    selection.length > 0 &&
+    selection.length < 20 &&
+    !loading
+  ) {
     renderIcon(event);
   } else {
     bubbleIcon.style.visibility = "hidden";
@@ -71,7 +79,7 @@ function closeBubble() {
   loading = false;
 }
 
-window.onclick = function (event) {
+window.onmousedown = function (event) {
   const bubbleArea = document.getElementById("bubbleContent");
 
   if (bubbleArea) {
@@ -122,6 +130,8 @@ function translateText(event) {
 
   if (selection.length > 0) {
     fetchAPI(selection, event);
+  } else {
+    closeBubble();
   }
 }
 
@@ -142,12 +152,21 @@ function renderBubble(selectionText, translation, event) {
 
   if (translation.length > 0) {
     translation.map(function (def) {
-      definitionList +=
-        "<div class='definition-container'/><p class='type'>" +
-        "[" + def.type + "]." +
-        "</p> <p class='definition'>" +
-        def.definition +
-        "</p></div>";
+      if (def.type !== null && def.type !== "null") {
+        definitionList +=
+          "<div class='definition-container'/><p class='type'>" +
+          "[" +
+          def.type +
+          "]." +
+          "</p> <p class='definition'>" +
+          def.definition +
+          "</p></div>";
+      } else {
+        definitionList +=
+          "<div class='definition-container'/><p class='definition'>" +
+          def.definition +
+          "</p></div>";
+      }
     });
   } else {
     definitionList +=
@@ -161,12 +180,17 @@ function renderBubble(selectionText, translation, event) {
     "<select name='dict' id='dict-selection' class='dict-selection'>" +
     "<option value='eng2shn'>Engish - Shan</option>" +
     "<option value='shn2eng'>Shan - English</option>" +
+    "<option value='shn2bur'>Shan - Burmese</option>" +
+    "<option value='bur2shn'>Burmese - Shan</option>" +
+    "<option value='tha2shn'>Thai - Shan</option>" +
+    "<option value='shn2shn'>Shan - Shan</option>" +
+    "<option value='pli2shn'>Pali - Shan</option>" +
     "</select>" +
     "<span id='closeButton' class='closeButton'>&times;</span>" +
     "<p class='langText' id='selection-word'>English:</p><p class='translatedText'> " +
     "<button id='speak-button' class='speak-button'><i class='fa fa-volume-up fa-lg'></i></button> " +
     selectionText +
-    "</p><p class='langText' id='translation-word'>Shan:</p><p class='translatedText'>" +
+    "</p><p class='langText' id='translation-word'>Shan:</p><p class='translatedText'> " +
     definitionList +
     "</p><div><a class='websiteLink' href='https://shandictionary.com' target='_blank' rel='noopener '>shandictionary.com</a></div></div>";
 
@@ -178,9 +202,34 @@ function renderBubble(selectionText, translation, event) {
 
   document.getElementById("dict-selection").value = languageEndpoint;
 
-  if (languageEndpoint === "shn2eng") {
-    document.getElementById("selection-word").innerHTML = "Shan:";
-    document.getElementById("translation-word").innerHTML = "English:";
+  switch (languageEndpoint) {
+    case "shn2eng":
+      document.getElementById("selection-word").innerHTML = "Shan:";
+      document.getElementById("translation-word").innerHTML = "English:";
+      break;
+    case "shn2bur":
+      document.getElementById("selection-word").innerHTML = "Shan:";
+      document.getElementById("translation-word").innerHTML = "Burmese:";
+      break;
+    case "bur2shn":
+      document.getElementById("selection-word").innerHTML = "Burmese:";
+      document.getElementById("translation-word").innerHTML = "Shan:";
+      break;
+    case "tha2shn":
+      document.getElementById("selection-word").innerHTML = "Thai:";
+      document.getElementById("translation-word").innerHTML = "Shan:";
+      break;
+    case "shn2shn":
+      document.getElementById("selection-word").innerHTML = "Shan:";
+      document.getElementById("translation-word").innerHTML = "Shan:";
+      break;
+    case "pli2shn":
+      document.getElementById("selection-word").innerHTML = "Pali:";
+      document.getElementById("translation-word").innerHTML = "Shan:";
+      break;
+    default:
+      document.getElementById("selection-word").innerHTML = "English:";
+      document.getElementById("translation-word").innerHTML = "Shan:";
   }
 
   // handle dict-selection change
@@ -191,6 +240,10 @@ function renderBubble(selectionText, translation, event) {
       closeBubble();
       translateText(event);
     });
+
+  if (languageEndpoint !== "eng2shn" && languageEndpoint !== "shn2eng") {
+    document.getElementById("speak-button").style.display = "none";
+  }
 
   document.getElementById("speak-button").onclick = speakMe.bind(
     null,

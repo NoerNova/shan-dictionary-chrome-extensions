@@ -76,21 +76,25 @@
 
 .langText {
   font-size: 0.9em;
-  font-weight: normal;
+  font-weight: bold;
   color: #333;
   font-family: "Shan";
   margin: 5px !important;
   padding-top: 5px;
 }
 
+.definition {
+  padding: 5px;
+}
+
 .type {
   font-style: italic;
-  color: rgba(0,0,0,0.5);
+  padding: 5px;
+  color: rgba(0, 0, 0, 0.5);
 }
 .translatedText {
   font-size: 16px;
   font-family: "Shan";
-  font-weight: bold;
   margin: 5px !important;
 }
 
