@@ -5,6 +5,12 @@
   "description": "This extension will provide English-Shan, English-Shan, Shan-Burmese dictionary from shandictionary.com",
   "version": "1.0.0",
 
+  "icons": {
+    "16": "assets/images/icon16.png",
+    "32": "assets/images/icon32.png",
+    "64": "assets/images/icon64.png",
+    "128": "assets/images/icon128.png"
+  },
   "action": {
     "default_popup": "./popup/popup.html",
     "default_title": "Shan Dictionary",

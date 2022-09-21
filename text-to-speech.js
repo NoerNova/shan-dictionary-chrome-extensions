@@ -1,6 +1,7 @@
 /* jshint esversion: 8 */
 
-const SHN_TTS_API = "https://shantts.herokuapp.com/api/?text=";
+const SHN_TTS_API = "https://taitts.cyclic.app/api/?text=";
+const BUR_TTS_API = "https://myanmartts.glitch.me/api?text=";
 
 // speak function
 function browserSpeak(msg, vox) {
@@ -24,12 +25,27 @@ async function shanTTSSpeak(msg) {
   } catch (err) {}
 }
 
+async function burTTSSpeak(msg) {
+  try {
+    const e = await fetch(BUR_TTS_API + msg + "&voice=my");
+    const { url } = await e.json();
+
+    console.log(url);
+
+    if (!url) return;
+
+    const audio = Audio(data.url);
+    audio.play();
+  } catch (err) {}
+}
+
 function speakMe(word, endpoint) {
   if (endpoint === "eng2shn") {
     browserSpeak(word, "Google US English");
     return;
-  } else if (endpoint === "tha2shn") {
-    browserSpeak(word, "Thai");
+  } else if (endpoint === "bur2shn") {
+    burTTSSpeak(word);
+    return;
   }
 
   shanTTSSpeak(word);
