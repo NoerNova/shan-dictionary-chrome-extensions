@@ -118,6 +118,7 @@ function fetchAPI(selection, event) {
       }
     })
     .catch(function (err) {
+      console.log(err);
       closeBubble();
     });
 }
@@ -175,7 +176,7 @@ function renderBubble(selectionText, translation, event) {
       "</p></div>";
   }
 
-  bubbleContent.innerHTML =
+  const innerBubbleContent =
     "<div class='bubbleContentContainer'>" +
     "<select name='dict' id='dict-selection' class='dict-selection'>" +
     "<option value='eng2shn'>Engish - Shan</option>" +
@@ -194,6 +195,14 @@ function renderBubble(selectionText, translation, event) {
     definitionList +
     "</p><div><a class='websiteLink' href='https://shandictionary.com' target='_blank' rel='noopener '>shandictionary.com</a></div></div>";
 
+  const parser = new DOMParser();
+  const parsed = parser.parseFromString(innerBubbleContent, `text/html`);
+  const tags = parsed.getElementsByTagName(`body`);
+
+  bubbleContent.innerHTML = ``;
+  for (const tag of tags) {
+    bubbleContent.appendChild(tag);
+  }
   const { posX, posY } = getPosition(event);
   bubbleContent.style.top = posY + "px";
   bubbleContent.style.left = posX + "px";

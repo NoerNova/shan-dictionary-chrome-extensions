@@ -3,7 +3,7 @@
 
   "name": "Shan Dictionary",
   "description": "This extension will provide English-Shan, English-Shan, Shan-Burmese dictionary from shandictionary.com",
-  "version": "1.0.0",
+  "version": "1.1.0",
 
   "icons": {
     "16": "assets/images/icon16.png",
