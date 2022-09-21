@@ -25,26 +25,9 @@ async function shanTTSSpeak(msg) {
   } catch (err) {}
 }
 
-async function burTTSSpeak(msg) {
-  try {
-    const e = await fetch(BUR_TTS_API + msg + "&voice=my");
-    const { url } = await e.json();
-
-    console.log(url);
-
-    if (!url) return;
-
-    const audio = Audio(data.url);
-    audio.play();
-  } catch (err) {}
-}
-
 function speakMe(word, endpoint) {
   if (endpoint === "eng2shn") {
     browserSpeak(word, "Google US English");
-    return;
-  } else if (endpoint === "bur2shn") {
-    burTTSSpeak(word);
     return;
   }
 
