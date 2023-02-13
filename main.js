@@ -186,6 +186,7 @@ function renderBubble(selectionText, translation, event) {
     "<option value='tha2shn'>Thai - Shan</option>" +
     "<option value='shn2shn'>Shan - Shan</option>" +
     "<option value='pli2shn'>Pali - Shan</option>" +
+    "<option value='zh2shn'>Chinese - Shan</option>" +
     "</select>" +
     "<span id='closeButton' class='closeButton'>&times;</span>" +
     "<p class='langText' id='selection-word'>English:</p><p class='translatedText'> " +
@@ -236,9 +237,14 @@ function renderBubble(selectionText, translation, event) {
       document.getElementById("selection-word").innerHTML = "Pali:";
       document.getElementById("translation-word").innerHTML = "Shan:";
       break;
+    case "zh2shn":
+      document.getElementById("selection-word").innerHTML = "Chinese:";
+      document.getElementById("translation-word").innerHTML = "Shan:";
+      break;
     default:
       document.getElementById("selection-word").innerHTML = "English:";
       document.getElementById("translation-word").innerHTML = "Shan:";
+      break;
   }
 
   // handle dict-selection change
