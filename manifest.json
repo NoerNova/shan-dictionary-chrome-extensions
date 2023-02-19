@@ -2,7 +2,7 @@
   "manifest_version": 3,
 
   "name": "Shan Dictionary",
-  "description": "This extension will provide English-Shan, English-Shan, Shan-Burmese and Chinese-Shan dictionary from shandictionary.com",
+  "description": "This extension will provide dictionary from shandictionary.com",
   "version": "1.2.0",
 
   "icons": {
