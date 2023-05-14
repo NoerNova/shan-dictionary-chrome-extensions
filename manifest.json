@@ -2,8 +2,8 @@
   "manifest_version": 3,
 
   "name": "Shan Dictionary",
-  "description": "This extension will provide dictionary from shandictionary.com",
-  "version": "1.2.0",
+  "description": "This extension will provide such as Shan-English, Shan-Burmese, Thai-Shan, Pali-Shan and more dictionary from shandictionary.com",
+  "version": "1.3.0",
 
   "icons": {
     "16": "assets/images/icon16.png",

@@ -1,7 +1,8 @@
 /* jshint esversion:8 */
 
 // shandictionary api URL
-const apiURL = "https://api.shandictionary.com/api/collections/entries/";
+// V1 const apiURL = "https://api.shandictionary.com/api/collections/entries/";
+const apiURL = "https://api2.shandictionary.com/api/content/items/";
 
 let inputText = document.getElementById("search-box");
 let defaultElement = document.getElementById("translation").innerHTML;
@@ -90,17 +91,18 @@ function translateInput() {
   const dictEndpoint = document.getElementById("dict-selection").value;
   const getInputText = inputText.value.toLowerCase() || "";
 
-  const url = apiURL + dictEndpoint + "/" + "?filter[word]=" + getInputText;
+  const url =
+    apiURL + dictEndpoint + "?filter={word:{$regex:'" + getInputText + "'}}";
 
   fetch(url)
     .then(function (response) {
       return response.json();
     })
     .then(function (res) {
-      if (res.entries.length > 0) {
+      if (res.length > 0) {
         var definitionList = "";
 
-        res.entries.map(function (def) {
+        res.map(function (def) {
           if (def.type !== null && def.type !== "null") {
             definitionList +=
               "<div class='definition-container'/><p class='type'>" +

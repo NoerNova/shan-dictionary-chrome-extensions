@@ -1,7 +1,8 @@
 /*jshint esversion: 8 */
 
 // shandictionary api URL
-const apiURL = "https://api.shandictionary.com/api/collections/entries/";
+// V1 const apiURL = "https://api.shandictionary.com/api/collections/entries/";
+const apiURL = "https://api2.shandictionary.com/api/content/items/";
 
 // bubbleIcon
 let bubbleIcon = document.createElement("div");
@@ -104,17 +105,17 @@ function fetchAPI(selection, event) {
   const url =
     apiURL +
     languageEndpoint +
-    "/" +
-    "?filter[word]=" +
-    selection.toLowerCase();
+    "?filter={word:{$regex:'" +
+    selection.toLowerCase() +
+    "'}}";
 
   fetch(url)
     .then(function (response) {
       return response.json();
     })
     .then(function (res) {
-      if (res.entries) {
-        renderBubble(selection, res.entries, event);
+      if (res) {
+        renderBubble(selection, res, event);
       }
     })
     .catch(function (err) {
@@ -179,14 +180,14 @@ function renderBubble(selectionText, translation, event) {
   const innerBubbleContent =
     "<div class='bubbleContentContainer'>" +
     "<select name='dict' id='dict-selection' class='dict-selection'>" +
-    "<option value='eng2shn'>Engish - Shan</option>" +
-    "<option value='shn2eng'>Shan - English</option>" +
-    "<option value='shn2bur'>Shan - Burmese</option>" +
     "<option value='bur2shn'>Burmese - Shan</option>" +
-    "<option value='tha2shn'>Thai - Shan</option>" +
-    "<option value='shn2shn'>Shan - Shan</option>" +
-    "<option value='pli2shn'>Pali - Shan</option>" +
     "<option value='zh2shn'>Chinese - Shan</option>" +
+    "<option value='eng2shn'>Engish - Shan</option>" +
+    "<option value='pli2shn'>Pali - Shan</option>" +
+    "<option value='shn2bur'>Shan - Burmese</option>" +
+    "<option value='shn2eng'>Shan - English</option>" +
+    "<option value='shn2shn'>Shan - Shan</option>" +
+    "<option value='tha2shn'>Thai - Shan</option>" +
     "</select>" +
     "<span id='closeButton' class='closeButton'>&times;</span>" +
     "<p class='langText' id='selection-word'>English:</p><p class='translatedText'> " +
